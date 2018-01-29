@@ -1,3 +1,3 @@
 # blog
 
-* [Jan, 2018: Prometheus.io](/jan-prometheus)
+* [Jan, 2018: Prometheus.io](/jan-prometheus/README.md)
