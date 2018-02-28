@@ -5,7 +5,7 @@ By [zironycho](http://github.com/zironycho) :heart: [Neosapience, Inc](http://ww
 
 ## Preparing
 * Make s3 full permission on AWS/IAM/users
-* Knowledge for Swarm Cluster generation
+* Basic for generation Swarm Cluster
 
 ## In single node
 ```bash
