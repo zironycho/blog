@@ -1,4 +1,4 @@
-# docker-compose에서 swarm으로 
+# docker-compose를 swarm으로 
 By [zironycho](http://github.com/zironycho) :heart: [Neosapience, Inc](http://www.neosapience.com)
 
 **2018.02.24**
