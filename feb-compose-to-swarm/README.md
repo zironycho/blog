@@ -126,6 +126,15 @@ $ docker stack deploy -c docker-compose.yml {{ name_of_stack }}
   * `.env` 적용안됨. [.env 란](https://docs.docker.com/compose/environment-variables/#passing-environment-variables-through-to-containers)
   * compose file override 적용이 안되고 오직 한 compose file만 사용가능. [관련링크](https://docs.docker.com/compose/extends/#example-use-case)
 
+* 문제점 해결:
+  * 아래와 같이 `config` command를 이용하여 deploy용 docker-compose 파일을 만들 수 있다
+  * .env 환경변수들이 전부 삽입된다.
+  * 여러개의 docker-compose 파일이 사용가능하다.
+```
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml config > deploy.yml
+```
+
+
 #### volume에 넣어둔 코드들 제거(full dockerize)
 ```yaml
 services:
@@ -204,8 +213,9 @@ volumes:
 
 <br><br><br><br><br><br><br><br><br><br><br><br>
 ## References
-- https://docs.docker.com/compose/overview/
-- https://subicura.com/2017/02/25/container-orchestration-with-docker-swarm.html
-- https://docs.docker.com/engine/swarm/ingress/
-- https://gist.github.com/BretFisher/7233b7ecf14bc49eb47715bbeb2a2769
-- https://docs.docker.com/compose/bundles/
+* https://docs.docker.com/compose/overview/
+* https://subicura.com/2017/02/25/container-orchestration-with-docker-swarm.html
+* https://docs.docker.com/engine/swarm/ingress/
+* https://gist.github.com/BretFisher/7233b7ecf14bc49eb47715bbeb2a2769
+* https://docs.docker.com/compose/bundles/
+* https://docs.docker.com/engine/reference/commandline/stack_deploy/
