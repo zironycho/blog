@@ -199,7 +199,7 @@ $ docker-compose up
 ```
 compose file이 여러개라면 아래와 같이 타이핑해야한다...
 ```Bash
-$ docker-compose docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+$ docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
 ```
 
 매번 타이핑하기 좀 귀찮아서 자주 사용하는 `up`, `down`, `stop`, `ps`를 매핑시켜두었다. 추가로 아래의 매핑도 필요했었다
