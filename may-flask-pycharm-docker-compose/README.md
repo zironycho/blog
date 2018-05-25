@@ -5,7 +5,19 @@ By [zironycho](http://github.com/zironycho) :heart: [Neosapience, Inc](http://ww
 ![](1.png)
 
 ---
-## 왜 이런 스택을 사용하는지?
+## 들어가며
+나의 경우 flask로 앱을 만들 때 아래의 스택을 주로 사용한다.
+* flask + gunicorn (backend api)
+* celery (async job scheduling)
+* redis (message broker)
+* mongo (database)
+* vuejs (frontend)
+* nginx
+
+이 스택들을 묶어서 `docker compose`로 개발/작업하면 쉽고 빠르게 배포할 수 있다. `Pycharm`에서 `docker compose`의 지원이 없었다면, 좀 귀찮은 작업들이 많다. 각각의 것들을 컨테이너를 실행해서 로컬에서 다 접근하게 한 후에, 로컬에서 돌려보면서 수행해야한다. 이렇게 하면 환경변수들 셋팅이 좀 귀찮아 지고, docker-compose로 다시 구성했을때는 다시 테스트 해 보아야 한다. 실수의 여지가 많아지게 되는 것이다. 다행히 `Pycharm`에서 잘 지원해주는 덕분에 `docker compose`환경만 셋팅해 두면 이 환경 그대로 개발할 수 있게된다.
+
+2018년 부터, `Pycharm`에서 docker-compose의 버젼이 `3.0`에서 `3.3`으로 올라갔다. 그 전에는 docker-compose 3.0 spec이 아니면 수행이 안되었다. 그래서 개발할 때는 3.0으로 하고 배포할 때는 3.4로 바꿔서 했었다...
+
 <br><br><br><br>
 
 
@@ -26,7 +38,7 @@ By [zironycho](http://github.com/zironycho) :heart: [Neosapience, Inc](http://ww
    ├─ Makefile
    └─ Dockerfile
 ```
-
+<br><br>
 ---
 ### compose config file
 일반적으로 compose file 하나만으로 프로젝트를 진행할 수 있지만, 로컬에서 개발하고 테스트하고, `swarm`으로 배포를 한다고 한다면 두개이상의 compose file이 필요하게 된다. 만약 배포를 `swarm`을 사용하지 않고 하나의 도커머신에서만 한다면 한 개만 있어도 된다.
@@ -285,15 +297,15 @@ $ make up
   * 동작중이던 api container를 죽이고, pycharm에 의한 api container가 실행됨
 ![](pycharm-5.png)
 
+---
 
-## swarm
+<br><br><br><br>
+## swarm에 배포
 
 ### swarm용 compose config file
+`$ make deploy`를 수행하면 아래와 같이 `deploy.yml`이 생성이 된다. `.env`의 변수들과 `docker-compose.yml`과 `docker-compose.prod.yml`이 하나의 파일로 합쳐져서 아래와 같이 만들어 지게 된다.
 
-```
-$ make deploy
-```
-#### deploy.yml
+#### deploy.yml (auto generated)
 ```Yaml
 networks:
   backend:
@@ -359,11 +371,14 @@ volumes:
     driver: rexray/ebs
     name: hello-mongo-aws-ebs
 ```
+<br><br>
 
 ### swarm에서 수행
-이 테스트는 로컬 swarm에서 수행하기 때문에 volume 드라이버를 local로 다시 변경. 만약 aws에서 swarm으로 수행하고 싶다면 두가지 작업이 더 필요하다.
+만약 `aws`에서 swarm으로 수행한다면 아래와 같이 두가지 작업이 더 필요하다.
 * 도커이미지들을 레지스트리에 올려야하고
-* rexray/ebs plugin을 설치해야한다. 
+* rexray/ebs plugin을 설치
+
+이 테스트는 `로컬 swarm`에서 수행하기 때문에 레지스트리에서 받을 필요가 없다. 그리고 volume 드라이버를 local로 다시 변경해서 따로 rexray를 사용하지 않고 수행하도록 한다.
 ```
 $ docker stack deploy -c deploy.yml testapp
 $ docker service ls
@@ -371,6 +386,4 @@ $ docker service ls
 ![](swarm.png)
 
 
-# 단점
-* tag관리
 
