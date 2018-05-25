@@ -1,0 +1,376 @@
+# `Flask`를 `docker-compose`환경에서 `Pycharm`을 이용해서 개발하고 `swarm`용으로 배포하기
+By [zironycho](http://github.com/zironycho) :heart: [Neosapience, Inc](http://www.neosapience.com)
+**2018.05.26**
+
+![](1.png)
+
+---
+## 왜 이런 스택을 사용하는지?
+<br><br><br><br>
+
+
+---
+## skeleton
+전체코드: [github](http://github.com/neosapience/web-skeleton)
+```
+├─ .env
+├─ Makefile
+├─ docker-compose.yml
+├─ docker-compose.dev.yml
+├─ docker-compose.prod.yml
+├─ secrets/
+├─ api/
+│  ├─ Makefile
+│  └─ Dockerfile
+└─ frontend/
+   ├─ Makefile
+   └─ Dockerfile
+```
+
+---
+### compose config file
+일반적으로 compose file 하나만으로 프로젝트를 진행할 수 있지만, 로컬에서 개발하고 테스트하고, `swarm`으로 배포를 한다고 한다면 두개이상의 compose file이 필요하게 된다. 만약 배포를 `swarm`을 사용하지 않고 하나의 도커머신에서만 한다면 한 개만 있어도 된다.
+compose file은 `docker-compose`시 여러개를 override해서 사용할 수 있으므로 `develop`버전 `production`버젼을 따로 만들어서 사용하고 중복되는 내용은 `docker-compose.yml`에서 다루도록 한다.
+`.env`파일은 `docker-compose`시 기본으로 참조하게 되는 환경변수들이 정의되어 있다. `swarm`모드시 작동하지 않는다. 그래서 나중에 배포할 때는 `docker-compose config`를 사용해서 하나의 배포파일에 포함되게 해야한다.(다른방법도 있긴하다)
+
+```
+.env
+docker-compose.yml
+docker-compose.dev.yml
+docker-compose.prod.yml
+Makefile
+```
+<br><br>
+
+#### .env
+```dotenv
+COMPOSE_PROJECT_NAME=appname
+
+TAG_FRONTEND=0.0.1
+TAG_API=0.0.1
+```
+<br><br>
+
+#### docker-compose.yml
+```Yaml
+version: '3.4'
+networks:
+  backend:
+  frontend:
+
+volumes:
+  mongo-data:
+
+services:
+  mongo:
+    image: mvertes/alpine-mongo:3.6.3-0
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - backend
+
+  redis:
+    image: redis:alpine
+    networks:
+      - backend
+
+  frontend:
+    image: ${COMPOSE_PROJECT_NAME}-frontend:${TAG_FRONTEND}-dev
+    networks:
+      - frontend
+    ports:
+      - 80:80
+    depends_on:
+      - api
+
+  api: 
+    image: ${COMPOSE_PROJECT_NAME}-api:${TAG_API}
+    command: gunicorn --log-level=debug --workers=2
+    networks:
+      - frontend
+      - backend
+    environment:
+      - SECRET_KEY_FILE=/run/secrets/api_secret
+    depends_on:
+      - mongo
+      - redis
+
+  worker:
+    image: ${COMPOSE_PROJECT_NAME}-api:${TAG_API}
+    command: celery -A task.celery_app worker
+    networks:
+      - backend
+    environment:
+      - SECRET_KEY_FILE=/run/secrets/api_secret
+    depends_on:
+      - redis
+```
+<br><br>
+
+#### docker-compose.dev.yml
+```Yaml
+version: '3.4'
+
+networks:
+  backend:
+    driver: bridge
+  frontend:
+    driver: bridge
+
+volumes:
+  mongo-data:
+    driver: local
+
+services:
+  mongo:
+    ports:
+      - 27017:27017
+
+  frontend:
+    image: ${COMPOSE_PROJECT_NAME}-frontend:${TAG_FRONTEND}-local
+
+  api: 
+    volumes:
+      - ./api:/code
+      - ./secrets/api_secret_dev:/run/secrets/api_secret
+    ports:
+      - 5000:5000
+
+  worker:
+    volumes:
+      - ./api:/code
+      - ./secrets/api_secret_dev:/run/secrets/api_secret
+
+```
+<br><br>
+
+#### docker-compose.prod.yml
+```Yaml
+version: '3.4'
+
+networks:
+  backend:
+    driver: overlay
+  frontend:
+    driver: overlay
+
+volumes:
+  mongo-data:
+    driver: rexray/ebs
+    name: hello-mongo-aws-ebs
+
+secrets:
+  api_secret:
+    file: ./secrets/api_secret_live
+
+services:
+  api:
+    secrets:
+    - api_secret
+    deploy:
+      mode: replicated
+      replicas: 2
+
+  worker:
+    secrets:
+    - api_secret
+    deploy:
+      mode: replicated
+      replicas: 2
+```
+<br><br>
+
+#### Makefile
+compose file이 한개라면 아래처럼 쉽게 할 수 있어서 필요없다.
+```Bash
+$ docker-compose up
+```
+compose file이 여러개라면 아래와 같이 타이핑해야한다...
+```Bash
+$ docker-compose docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+```
+
+매번 타이핑하기 좀 귀찮아서 자주 사용하는 `up`, `down`, `stop`, `ps`를 매핑시켜두었다. 추가로 아래의 매핑도 필요했었다
+* deploy: 배포할 때 사용될 일체형 compose config file을 만들용도
+* build: 모든 배포할 도커이미지들 빌드. `docker-compose build`로 사용해도 됨...
+* push: 모든 배포할 이미지를 registry에 upload
+* ls: 모든 배포할 이미지들 태그보는 용도
+
+```Makefile
+docker-compose-dev := docker-compose -f docker-compose.yml -f docker-compose.dev.yml
+docker-compose-prod := docker-compose -f docker-compose.yml -f docker-compose.prod.yml
+
+up:
+	@${docker-compose-dev} up -d
+
+down:
+	@${docker-compose-dev} down
+
+stop:
+	@${docker-compose-dev} stop ${service}
+
+ps:
+	@${docker-compose-dev} ps
+
+deploy:
+	@${docker-compose-prod} config > deploy.yml
+
+build:
+	@make -C api build
+	@make -C frontend fake
+
+push:
+	@make -C api push
+	@make -C frontend push
+
+ls:
+	@make -C api ls
+	@make -C frontend ls
+
+```
+<br><br>
+
+### docker images (api, frontend)
+frontend, backend를 분리해서 만드는 것을 지향하기 때문에, 각각 디렉토리에 docker이미지와 makefile을 관리
+```
+api/Makefile
+api/Dockerfile
+
+frontend/Makefile
+frontend/Dockerfile
+```
+<br><br>
+
+#### api/Makefile
+상위에서 사용하는 커맨들을 지원하기 위해서
+
+```Makefile
+project := appname
+name := ${project}-api
+tag := 0.0.1
+pwd := $(shell pwd)
+
+
+build:
+	@docker build . -t ${name}:${tag}
+
+ls:
+	@docker images ${name}
+
+h:
+	@docker history ${name}:${tag}
+
+push:
+	@docker push ${name}:${tag}
+```
+
+## docker-compose with Pycharm
+1. docker-compose environment up
+```Bash
+$ make up
+```
+![](pycharm-1.png)
+
+2. open flask project: /api
+![](pycharm-2.png)
+
+
+3. Preferences > Project > Project Interpreter > Add > Docker Compose
+![](pycharm-3.png)
+
+4. set Configuration files
+![](pycharm-4.png)
+
+5. run test code
+  * 동작중이던 api container를 죽이고, pycharm에 의한 api container가 실행됨
+![](pycharm-5.png)
+
+
+## swarm
+
+### swarm용 compose config file
+
+```
+$ make deploy
+```
+#### deploy.yml
+```Yaml
+networks:
+  backend:
+    driver: overlay
+  frontend:
+    driver: overlay
+secrets:
+  api_secret:
+    file: /Users/zironycho/workspace/web-skeleton/secrets/api_secret_live
+services:
+  api:
+    command: gunicorn --log-level=debug --workers=2
+    depends_on:
+    - mongo
+    - redis
+    deploy:
+      mode: replicated
+      replicas: 2
+    environment:
+      SECRET_KEY_FILE: /run/secrets/api_secret
+    image: appname-api:0.0.1
+    networks:
+      backend: null
+      frontend: null
+    secrets:
+    - source: api_secret
+  frontend:
+    depends_on:
+    - api
+    image: appname-frontend:0.0.1-dev
+    networks:
+      frontend: null
+    ports:
+    - published: 80
+      target: 80
+  mongo:
+    image: mvertes/alpine-mongo:3.6.3-0
+    networks:
+      backend: null
+    volumes:
+    - mongo-data:/data/db:rw
+  redis:
+    image: redis:alpine
+    networks:
+      backend: null
+  worker:
+    command: celery -A task.celery_app worker
+    depends_on:
+    - redis
+    deploy:
+      mode: replicated
+      replicas: 2
+    environment:
+      SECRET_KEY_FILE: /run/secrets/api_secret
+    image: appname-api:0.0.1
+    networks:
+      backend: null
+    secrets:
+    - source: api_secret
+version: '3.4'
+volumes:
+  mongo-data:
+    driver: rexray/ebs
+    name: hello-mongo-aws-ebs
+```
+
+### swarm에서 수행
+이 테스트는 로컬 swarm에서 수행하기 때문에 volume 드라이버를 local로 다시 변경. 만약 aws에서 swarm으로 수행하고 싶다면 두가지 작업이 더 필요하다.
+* 도커이미지들을 레지스트리에 올려야하고
+* rexray/ebs plugin을 설치해야한다. 
+```
+$ docker stack deploy -c deploy.yml testapp
+$ docker service ls
+```
+![](swarm.png)
+
+
+# 단점
+* tag관리
+
