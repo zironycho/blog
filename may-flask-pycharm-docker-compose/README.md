@@ -44,85 +44,48 @@ By [zironycho](http://github.com/zironycho) :heart: [Neosapience, Inc](http://ww
 일반적으로 compose file 하나만으로 프로젝트를 진행할 수 있지만, 로컬에서 개발하고 테스트하고, `swarm`으로 배포를 한다고 한다면 두개이상의 compose file이 필요하게 된다. 만약 배포를 `swarm`을 사용하지 않고 하나의 도커머신에서만 한다면 한 개만 있어도 된다.
 compose file은 `docker-compose`시 여러개를 override해서 사용할 수 있으므로 `develop`버전 `production`버젼을 따로 만들어서 사용하고 중복되는 내용은 `docker-compose.yml`에서 다루도록 한다.
 `.env`파일은 `docker-compose`시 기본으로 참조하게 되는 환경변수들이 정의되어 있다. `swarm`모드시 작동하지 않는다. 그래서 나중에 배포할 때는 `docker-compose config`를 사용해서 하나의 배포파일에 포함되게 해야한다.(다른방법도 있긴하다)
-
-```
-.env
-docker-compose.yml
-docker-compose.dev.yml
-docker-compose.prod.yml
-Makefile
-```
 <br><br>
 
 #### .env
 ```dotenv
+# docker compose를 사용해서 서비스들을 띄울때 prefix가 된다.
 COMPOSE_PROJECT_NAME=appname
 
+# docker image version
 TAG_FRONTEND=0.0.1
 TAG_API=0.0.1
 ```
 <br><br>
 
-#### docker-compose.yml
+#### network and volumes
+
+network로 사용할 이름들만 명시하고 각각의 서비스에서는 이 이름을 사용
 ```Yaml
-version: '3.4'
+# docker-compose.yml
 networks:
   backend:
   frontend:
 
 volumes:
   mongo-data:
-
+  
+    
 services:
   mongo:
-    image: mvertes/alpine-mongo:3.6.3-0
+    image: ...
+    # volume 사용
     volumes:
       - mongo-data:/data/db
+    # network 사용
     networks:
       - backend
-
-  redis:
-    image: redis:alpine
-    networks:
-      - backend
-
-  frontend:
-    image: ${COMPOSE_PROJECT_NAME}-frontend:${TAG_FRONTEND}-dev
-    networks:
-      - frontend
-    ports:
-      - 80:80
-    depends_on:
-      - api
-
-  api: 
-    image: ${COMPOSE_PROJECT_NAME}-api:${TAG_API}
-    command: gunicorn --log-level=debug --workers=2
-    networks:
-      - frontend
-      - backend
-    environment:
-      - SECRET_KEY_FILE=/run/secrets/api_secret
-    depends_on:
-      - mongo
-      - redis
-
-  worker:
-    image: ${COMPOSE_PROJECT_NAME}-api:${TAG_API}
-    command: celery -A task.celery_app worker
-    networks:
-      - backend
-    environment:
-      - SECRET_KEY_FILE=/run/secrets/api_secret
-    depends_on:
-      - redis
 ```
-<br><br>
 
-#### docker-compose.dev.yml
+각각의 driver를 명시해줌
+* [network drivers](https://docs.docker.com/network/#network-drivers)
+* [volume plugins](https://docs.docker.com/engine/extend/legacy_plugins/#volume-plugins)
 ```Yaml
-version: '3.4'
-
+# docker-compose.dev.yml
 networks:
   backend:
     driver: bridge
@@ -132,34 +95,10 @@ networks:
 volumes:
   mongo-data:
     driver: local
-
-services:
-  mongo:
-    ports:
-      - 27017:27017
-
-  frontend:
-    image: ${COMPOSE_PROJECT_NAME}-frontend:${TAG_FRONTEND}-local
-
-  api: 
-    volumes:
-      - ./api:/code
-      - ./secrets/api_secret_dev:/run/secrets/api_secret
-    ports:
-      - 5000:5000
-
-  worker:
-    volumes:
-      - ./api:/code
-      - ./secrets/api_secret_dev:/run/secrets/api_secret
-
 ```
-<br><br>
 
-#### docker-compose.prod.yml
 ```Yaml
-version: '3.4'
-
+# docker-compose.prod.yml
 networks:
   backend:
     driver: overlay
@@ -170,22 +109,59 @@ volumes:
   mongo-data:
     driver: rexray/ebs
     name: hello-mongo-aws-ebs
+```
+<br><br>
 
+
+#### secrets
+`secrets`는 보안에 민감한 파일을 docker service에서 image가 아닌 container 실행타임에 binding시켜주는 로직이다. 이건 swarm에서만 동작하게 된다. 그래서 비슷한 환경을 docker-compose 환경에서 해주려면 아래처럼 해주면 된다. [detail](https://docs.docker.com/engine/swarm/secrets/#read-more-about-docker-secret-commands)
+
+`/run/secrets/{{secret_file_name}}`과 같은 형식으로 일단 환경변수를 셋팅해준다. 
+
+```Yaml
+# docker-compose.yml
+services:
+  api: 
+    environment:
+      - SECRET_KEY_FILE=/run/secrets/api_secret
+    image: ...
+    command: ...
+    networks: ...
+```
+
+local에서 `secrets/api_secret_dev`라는 파일을 만들어서 docker container에 앞에서 선언한 `SECRET_KEY_FILE`이라는 환경변수에 입력해 둔 path와 동일해서 mount한다. 
+```Yaml
+# docker-compose.dev.yml
+services:
+  api: 
+    volumes:
+      - ./secrets/api_secret_dev:/run/secrets/api_secret
+    ...
+```
+
+secrets라는 필드에 `{{secret_file_name}}`의 이름으로 file을 등록한다. 만약 코드가 오픈된다면, 저 file을 swarm에서 stack deploy를 하기 전에 만들어도 된다.
+
+```Yaml
+# docker-compose.prod.yml
 secrets:
   api_secret:
     file: ./secrets/api_secret_live
 
 services:
-  api:
+  api: 
     secrets:
-    - api_secret
-    deploy:
-      mode: replicated
-      replicas: 2
+      - api_secret
+    ...
+```
+<br><br>
 
-  worker:
-    secrets:
-    - api_secret
+#### swarm deploy options
+
+swarm deploy에 해당하는 파일들은 `docker-compose.prod.yml`에 셋팅해 둔다. [detail](https://docs.docker.com/compose/compose-file/#deploy)
+```Yaml
+# docker-compose.prod.yml
+services:
+  api:
     deploy:
       mode: replicated
       replicas: 2
