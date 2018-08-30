@@ -17,11 +17,13 @@ By [zironycho](http://github.com/zironycho) :heart: [Neosapience, Inc](http://ww
 
 
 
-- greenlet (green thread: s/w level thread)
+- greenlet (green thread: program level thread, not a O/S level)
   - eventlet
   - gevent
-- libuv, libev, 옛날버젼 libevent
-  - gevent(default = libev)
+- gevent(default = libev)
+  - libuv
+  - libev
+  - libevent: only old version
 
 
 
@@ -329,4 +331,5 @@ world
 * http://leekchan.com/gevent-tutorial-ko/
 * https://gist.github.com/andreybolonin/2413da76f088e2c5ab04df53f07659ea
 * http://www.gevent.org/loop_impls.html
+* https://github.com/squeaky-pl/japronto
 
