@@ -1,5 +1,10 @@
 # Async worker in python web framework: Flask and Sanic
 
+By [zironycho](http://github.com/zironycho) :heart: [Neosapience, Inc](http://www.neosapience.com), and OSEU
+**2018.08.30**
+
+
+
 
 
 ## How to use async worker for gunicorn
@@ -9,6 +14,16 @@
 `--worker-class {{ STRING }}` or ` -k {{ STRING }}`
 
 ![](worker-class.png)
+
+
+
+- greenlet (green thread: s/w level thread)
+  - eventlet
+  - gevent
+- libuv, libev, 옛날버젼 libevent
+  - gevent(default = libev)
+
+
 
 ### Test code
 
@@ -59,8 +74,6 @@ world
 
 
 
-
-
 ## eventlet w/o coding
 
 ### Run:
@@ -87,9 +100,11 @@ hello 1
 world
 ```
 
+[gunicorn issued](https://github.com/benoitc/gunicorn/issues/1847)
 
 
-## eventlet with monkey patch
+
+## eventlet with monkey patch in application level
 
 ### Code
 
@@ -306,8 +321,12 @@ world
 
 ## References
 
+* https://www.spirulasystems.com/blog/2015/01/20/gunicorn-worker-types/
 * http://docs.gunicorn.org/en/stable/settings.html
 * https://github.com/channelcat/sanic
 * https://github.com/wg/wrk
 * https://blog.signifai.io/not-your-fathers-python-amazing-powerful-frameworks/
+* http://leekchan.com/gevent-tutorial-ko/
+* https://gist.github.com/andreybolonin/2413da76f088e2c5ab04df53f07659ea
+* http://www.gevent.org/loop_impls.html
 
