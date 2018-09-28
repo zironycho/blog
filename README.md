@@ -1,5 +1,6 @@
 # blog
 
+* [Sep, 2018: Implement efficient wavenet using c++](/sep-wavenet/README.md)
 * [Aug, 2018: Async python web framework: Flask and Sanic](/aug-async-python-web-framework/README.md)
 * [Jun, 2018: Terraform for swarm in AWS](/jun-terraform-swarm-aws/README.md)
 * [May, 2018: Flask, Pycharm, docker-compose](/may-flask-pycharm-docker-compose/README.md)
