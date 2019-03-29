@@ -2,6 +2,7 @@
 
 ## 2019
 * [Feb, 2019: Jenkins + quay.io in swarm for CD](/2019/feb-jenkins-quay-swarm/README.md)
+* [Mar, 2019: AWS EKS Ingress service type](/2019/mar-eks-ingress/README.md)
 
 ## 2018
 * [Oct: Access log monitoring and visualization](/oct-access-log-monitoring/README.md)
