@@ -1,6 +1,7 @@
 # blog
 
 ## 2019
+* [Apr, 2019: Neosapience CICD and GitOps](/2019/apr-neosapience-cicd/README.md)
 * [Mar, 2019: AWS EKS Ingress service type](/2019/mar-eks-ingress/README.md)
 * [Feb, 2019: Jenkins + quay.io in swarm for CD](/2019/feb-jenkins-quay-swarm/README.md)
 
