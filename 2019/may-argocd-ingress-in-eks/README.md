@@ -58,3 +58,11 @@ spec:
 * `alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'` 이부분을 통해서 http는 항상 https로 redirect 해준다.
 
 * `{{ argocd-service-host }}` 이부분에 route53에 등록되어 있는 도메인을 연결하면, 알아서 route53에 등록해준다.
+
+
+## Refs:
+* https://github.com/kubernetes-sigs/aws-alb-ingress-controller
+* https://argoproj.github.io/argo-cd/
+* https://argoproj.github.io/argo-cd/operator-manual/ingress/
+* https://kubernetes-sigs.github.io/aws-alb-ingress-controller/guide/tasks/ssl_redirect/
+
