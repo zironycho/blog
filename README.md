@@ -2,7 +2,7 @@
 
 ## 2019
 * [Aug, 2019: 10Gb network test](/2019/aug-10Gb-network-test/README.md)
-* [Aug, 2019: Book studying "실전 스케일링 파이썬 프로그래밍"](/2019/aug-book/1.md)
+* [Aug, 2019: Book studying "실전 스케일링 파이썬 프로그래밍 1/4"](/2019/aug-book-1/README.md)
 * [July, 2019: Custom metrics for gpu on EKS](/2019/july-custom-metrics-for-gpu/README.md)
 * [June, 2019: docker for beginner](/2019/jun-docker-beginner/README.md)
 * [May, 2019: share audio player: iframe and oembed](/2019/may-oembed/README.md)
