@@ -1,6 +1,8 @@
 # blog
 
 ## 2019
+* [Sep, 2019: Outline - self hosted wiki](/2019/sep-outline/README.md)
+* [Sep, 2019: KubeDB - database in kubernetes](/2019/sep-kubedb/README.md)
 * [Aug, 2019: 10Gb network test](/2019/aug-10Gb-network-test/README.md)
 * [Aug, 2019: Book studying "실전 스케일링 파이썬 프로그래밍 1/4"](/2019/aug-book-1/README.md)
 * [July, 2019: Custom metrics for gpu on EKS](/2019/july-custom-metrics-for-gpu/README.md)

@@ -1,3 +1,5 @@
+[Home](/README.md)
+
 # docker plugin rexray/s3fs for swarm
 By [zironycho](http://github.com/zironycho) :heart: [Neosapience, Inc](http://www.neosapience.com)
 

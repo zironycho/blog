@@ -1,3 +1,5 @@
+[Home](/README.md)
+
 # Implement efficient wavenet using c++
 By [zironycho](http://github.com/zironycho) :heart: [Neosapience, Inc](http://www.neosapience.com), and OSEU
 **2018.09.28**
