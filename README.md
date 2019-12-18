@@ -1,6 +1,10 @@
 # blog
 
 ## 2019
+* [Dec, 2019: Kubernetes Seoul](/2019/dec-kubernetes-seoul/README.md)
+* [Nov, 2019: sorry, status](/2019/nov-sorry/README.md)
+* [Nov, 2019: grep](/2019/nov-grep/README.md)
+* [Oct, 2019: kubernetes service](/2019/nov-k8s-service/README.md)
 * [Sep, 2019: Outline - self hosted wiki](/2019/sep-outline/README.md)
 * [Sep, 2019: KubeDB - database in kubernetes](/2019/sep-kubedb/README.md)
 * [Aug, 2019: 10Gb network test](/2019/aug-10Gb-network-test/README.md)
