@@ -1,6 +1,12 @@
 # blog
 
+## 2020
+* [Mar, 2020: kubernetes pod termination(gunicorn, nginx)](/2020/mar-k8s-pod-termination.md)
+* [Feb, 2020: kubernetes에서 redis운영](/2020/feb-redis.md)
+* [Jan, 2020: nginx ingress + auth](/2020/jan-nginx-auth.md)
+
 ## 2019
+
 * [Dec, 2019: Kubernetes Seoul](/2019/dec-kubernetes-seoul/README.md)
 * [Nov, 2019: sorry, status](/2019/nov-sorry/README.md)
 * [Nov, 2019: grep](/2019/nov-grep/README.md)
