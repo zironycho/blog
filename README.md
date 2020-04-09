@@ -1,6 +1,7 @@
 # blog
 
 ## 2020
+* [Apr, 2020: Sentry in flask - How to make easy setup for flask developer](2020/apr-sentry-in-flask.md)
 * [Mar, 2020: kubernetes pod termination(gunicorn, nginx)](/2020/mar-k8s-pod-termination.md)
 * [Feb, 2020: kubernetes에서 redis운영](/2020/feb-redis.md)
 * [Jan, 2020: nginx ingress + auth](/2020/jan-nginx-auth.md)
