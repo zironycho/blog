@@ -33,11 +33,11 @@ app = Flask(__name__)
 
 
 
-flask app 생성시 `app = Flask(__name__)` 이렇게 생성하게 되는데. 
+flask app 생성시 `app = Flask(__name__)` 이렇게 생성하게 된다. 그리고 wsgi를 interface를 지원하는 서버에서 `app()`를 콜하면서 wsgi 앱이 수행될 것이다.
 
-[실제 플라스크쪽 코드를 보게 되면 `__call__` 이부분에 의해서 앱이 만들어 짐을 알수 있다.](https://github.com/pallets/flask/blob/2062d984abd3364557a6dcbd3300cfe3e4ecf156/src/flask/app.py#L2364)
+[먼저 플라스크쪽 코드를 보게 되면 `__call__` 이부분에 의해서 wsgi 앱을 실행시킴을 알수 있다.](https://github.com/pallets/flask/blob/2062d984abd3364557a6dcbd3300cfe3e4ecf156/src/flask/app.py#L2364)
 
-[그래서 sentry sdk는 이부분을 본인들의 콜함수로 바꿔치기하고 flask의 기존 콜함수를 내부적으로 들고가면서 앱 생성시에 본래 flask로 생성하도록하며, 본인들이 미들웨로 동작한다](https://github.com/getsentry/sentry-python/blob/cd646579d04e2fad6a8994304314ac52fec2f83c/sentry_sdk/integrations/flask.py#L82-L93)
+[그래서 sentry sdk는 이부분을 본인들의 콜함수로 바꿔치기하고 flask의 기존 콜함수를 내부적으로 들고가면서 앱 수행시에 본래 flask로 수행되도록하며, 본인들이 미들웨로 동작한다](https://github.com/getsentry/sentry-python/blob/cd646579d04e2fad6a8994304314ac52fec2f83c/sentry_sdk/integrations/flask.py#L82-L93)
 
 ![](img/sentry-2.png)
 
