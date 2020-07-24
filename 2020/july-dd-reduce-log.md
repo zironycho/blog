@@ -1,3 +1,5 @@
+[Home](/README.md)
+
 # [Datadog] log 갯수 줄이기
 
 Datadog = (데이터개시끼) 

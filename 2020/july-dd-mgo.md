@@ -1,3 +1,5 @@
+[Home](/README.md)
+
 # [Datadog] mgo collection별 시간보기
 
 ## mongodb op time보기

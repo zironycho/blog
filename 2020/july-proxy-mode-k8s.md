@@ -1,3 +1,5 @@
+[Home](/README.md)
+
 ## About proxy-mode on Kubernetes
 
 Kube-proxy가 service layer 관장. eksctl로 k8s를 사용중이기에 아무것도 모른채 사용중이었음. 당연히 RR로 있을줄 알았는데, Random이네.. 

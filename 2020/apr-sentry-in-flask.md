@@ -1,3 +1,5 @@
+[Home](/README.md)
+
 # sentry flask code
 
 > 어떻게 sentry_sdk.init 하나만으로 flask app의 error message들을 보낼 수 있는지 깊게 들어가보자.

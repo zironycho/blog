@@ -1,3 +1,5 @@
+[Home](/README.md)
+
 ## kubernetes pod termination(gunicorn, nginx):
 
 > 궁금증: nginx와 gunicorn은 graceful termination이 될까?
