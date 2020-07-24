@@ -2,7 +2,7 @@
 
 ## 2020
 * [July, 2020: Monitoring with Datadog - mongodb](/2020/july-dd-mgo.md)
-* [July, 2020: Monitoring with Datadog - reduce log counts](/2020/july-dd-recue-log.md)
+* [July, 2020: Monitoring with Datadog - reduce log counts](/2020/july-dd-reduce-log.md)
 * [July, 2020: Proxy mode on kubernetes](/2020/july-proxy-mode-k8s.md)
 * [July, 2020: S3 proxy for subdirectory](/2020/july-s3-proxy-for-subdirectory.md)
 * [June, 2020: EKS cluster version update 1.14 -> 1.15](/2020/jun-eks-cluster-api-update.md)
