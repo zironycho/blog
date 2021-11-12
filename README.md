@@ -1,6 +1,26 @@
 # blog
 
+## 2021
+* [Nov, 2021: firebase google signup on server side](https://www.notion.so/neosapience/firebase-google-signup-on-server-side-55b34247d1484b2abc2ad133dab53b4b)
+* [Oct, 2021: What is the Krustlet](https://www.notion.so/neosapience/Krustlet-7fdb8a033a864ae995c18c9c8dd72de5)
+* [Sep, 2021: firebase connection issue in Korea](https://www.notion.so/neosapience/firebase-1eb00665d8f748f7a08b58cb1126711a)
+* [Sep, 2021: Amazon SQS](https://www.notion.so/neosapience/Amazon-SQS-b886ab5da2694da99fe9e9dba781b983)
+* [Sep, 2021: Amazon SQS](https://www.notion.so/neosapience/Amazon-SQS-b886ab5da2694da99fe9e9dba781b983)
+* [Aug, 2021: AWS Glue → redshift problem(double type)](https://www.notion.so/neosapience/AWS-Glue-redshift-problem-double-type-70ac219aaf70412bb674e7965c93b045)
+* [Jul, 2021: k8s watch dashboard](https://www.notion.so/neosapience/komodor-k8s-watch-dashboard-e6a5d22f92954f38b58717142fe21cfa)
+* [Jul, 2021: k8s multi-cluster upgrade (4/4)](https://www.notion.so/neosapience/k8s-multi-cluster-upgrade-4-4-c7a11648df0b41788c505ca6b3ab2040)
+* [Jul, 2021: k8s multi-cluster upgrade (3/4)](https://www.notion.so/neosapience/k8s-multi-cluster-upgrade-3-4-50e79bd642354c3a8d72d534d87ce7d7)
+* [Jun, 2021: k8s multi-cluster upgrade (2/4)](https://www.notion.so/neosapience/k8s-multi-cluster-upgrade-2-4-f917ad5da7c74380856f2a88736cc346)
+* [Jun, 2021: k8s multi-cluster upgrade (1/4)](https://www.notion.so/neosapience/k8s-multi-cluster-upgrade-1-4-469f5c2d681243d698b5a126ac9e1370)
+* [Jun, 2021: redis gui](https://www.notion.so/neosapience/2021-06-03-redis-gui-70cbea7d0160456195b75a6b40e500ed)
+* [Apr, 2021: 502 issue resolve](https://www.notion.so/neosapience/2021-04-29-502-issue-resolve-f6a0af1ed04f4a81a5854e9dbd6023e4)
+* [Apr, 2021: warm pool ec2 in autoscaler](https://neosapience.notion.site/2021-04-15-warm-pool-ec2-in-autoscaler-81277edff3884f52b8668684ff157131)
+* [Mar, 2021: Delivery www and non-www in cloudfront](https://www.notion.so/neosapience/2021-03-25-Delivery-www-and-non-www-in-cloudfront-623fc6b2670a46b8a177ca1b8d926c0f)
+* [Mar, 2021: AWS S3 + cloudfront subdirectory issue](https://neosapience.notion.site/2021-03-18-aws-s3-cloudfront-subdirectory-issue-af12b5acd2fd428fb825f7403c1627e4)
+* [Jan, 2021: migrate to mongo atlas](https://www.notion.so/neosapience/2021-01-07-mongo-atlas-d6c8ca1eb286483a8ad822f646f94aed)
+
 ## 2020
+* [Dec, 2020: Deprecating docker](https://www.notion.so/neosapience/2020-12-10-Deprecating-docker-efc2f88776a742a68edee3427a79594b)
 * [July, 2020: Monitoring with Datadog - mongodb](/2020/july-dd-mgo.md)
 * [July, 2020: Monitoring with Datadog - reduce log counts](/2020/july-dd-reduce-log.md)
 * [July, 2020: Proxy mode on kubernetes](/2020/july-proxy-mode-k8s.md)
